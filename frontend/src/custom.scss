@@ -1,0 +1,32 @@
+//updating default colors of bootstrap
+$primary: #362ec4;
+$secondary: #8f5325;
+$success: #3e8d63;
+$info: #7854e4;
+$warning: #b8c924;
+$danger: #d62518;
+$light: #f8f9fa;
+$dark: #343a40;
+
+//custom color to be mapped
+$coral: coral;
+$logo: #9e11ad;
+
+//this is used to map colors. change accordingly.
+$theme-colors: (
+  primary: $primary,
+  secondary: $secondary,
+  success: $secondary,
+  info: $info,
+  warning: $warning,
+  danger: $danger,
+  light: $light,
+  dark: $dark,
+// adding some additional color below
+  coral: $coral,
+  logo: $logo
+// now bg-coral, btn-logo, etc. can also be used in the project
+);
+
+// Import Bootstrap and its default variables
+@import "../node_modules/bootstrap/scss/bootstrap.scss"
