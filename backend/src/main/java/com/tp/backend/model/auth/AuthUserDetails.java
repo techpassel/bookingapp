@@ -1,6 +1,6 @@
 package com.tp.backend.model.auth;
 
-import com.tp.backend.model.UserInfo;
+import com.tp.backend.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,10 +15,10 @@ public class AuthUserDetails implements UserDetails {
     private boolean active;
     private List<GrantedAuthority> authorities;
 
-    public AuthUserDetails(UserInfo user) {
+    public AuthUserDetails(User user) {
         this.userName = user.getEmail();
         this.password = user.getPassword();
-        this.active = user.isEnabled();
+        this.active = user.getIsActive();
         this.authorities = Arrays.asList(() -> user.getUserType().getType());
     }
 

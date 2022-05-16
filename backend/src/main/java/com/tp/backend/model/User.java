@@ -14,7 +14,9 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo extends DatabaseEntity{
+@Table(name = "userdata")
+//In postgresql we can't keep table name as "user" so we had to rename table as "userdata".
+public class User extends DatabaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,16 +24,32 @@ public class UserInfo extends DatabaseEntity{
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Password is required")
-    private String password;
-
     @Email(message = "Email should be valid")
     @NotEmpty(message = "Email is required")
     @Column(unique = true)
     private String email;
 
-    private boolean enabled;
+    @NotBlank(message = "Password is required")
+    private String password;
 
+    @NotBlank(message = "Country is required")
+    private String country;
+
+    @NotBlank(message = "City is required")
+    private String city;
+
+    private String img;
+
+    @NotBlank(message = "Phone is required")
+    private String phone;
+
+    @Column(name = "is_admin")
+    private Boolean isAdmin;
+
+    @Column(name = "is_active")
+    private Boolean isActive;
+
+    @Enumerated(EnumType.STRING)
     @Column(name= "usertype")
     private UserType userType;
 }
