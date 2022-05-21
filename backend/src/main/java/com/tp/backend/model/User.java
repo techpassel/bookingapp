@@ -43,9 +43,6 @@ public class User extends DatabaseEntity{
     @NotBlank(message = "Phone is required")
     private String phone;
 
-    @Column(name = "is_admin")
-    private Boolean isAdmin;
-
     @Column(name = "is_active")
     private Boolean isActive;
 

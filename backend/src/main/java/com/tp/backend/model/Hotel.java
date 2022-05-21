@@ -1,5 +1,6 @@
 package com.tp.backend.model;
 
+import com.tp.backend.enums.PropertyType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class Hotel extends DatabaseEntity{
     private String name;
 
     @NotBlank(message = "Type is required")
-    private String type;
+    private PropertyType type;
 
     @NotBlank(message = "City is required")
     private String city;
@@ -46,10 +47,8 @@ public class Hotel extends DatabaseEntity{
     @CollectionTable
     private List<String> images;
 
-    @ElementCollection(targetClass = String.class)
-    @CollectionTable
-    private List<String> rooms;
-    //We need to check this whether it should be list of strings or list of Room entity;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "hotel")
+    private List<Room> rooms;
 
     @Column(name = "min_price")
     private Integer minPrice;

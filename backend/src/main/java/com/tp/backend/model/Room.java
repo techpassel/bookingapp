@@ -19,6 +19,11 @@ public class Room extends DatabaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
+
     @NotBlank(message = "Title is required")
     private String title;
 

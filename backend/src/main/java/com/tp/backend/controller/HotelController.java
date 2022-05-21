@@ -36,10 +36,21 @@ public class HotelController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/city/count/:cityName")
-    public ResponseEntity<?> countHotelsByCity(@PathVariable String cityName){
+    @RequestMapping(method = RequestMethod.GET, value = "/count-by-city/:cityName")
+    public ResponseEntity<?> countByCity(@PathVariable String cityName){
         try{
-            return new ResponseEntity<>(hotelService.countHotelsByCity(cityName), HttpStatus.OK);
+            return new ResponseEntity<>(hotelService.countByCity(cityName), HttpStatus.OK);
+        } catch (BackendException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/count-by-type")
+    public ResponseEntity<?> countByType(){
+        try{
+            return new ResponseEntity<>(hotelService.countByType(), HttpStatus.OK);
         } catch (BackendException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){

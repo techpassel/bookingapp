@@ -3,8 +3,10 @@ package com.tp.backend.service;
 import com.tp.backend.dto.HotelRequestDto;
 import com.tp.backend.dto.HotelResponseDto;
 import com.tp.backend.dto.HotelSearchQueryDto;
+import com.tp.backend.enums.PropertyType;
 import com.tp.backend.mapper.HotelMapper;
 import com.tp.backend.model.Hotel;
+import com.tp.backend.model.Room;
 import com.tp.backend.repository.HotelRepository;
 import exception.BackendException;
 import lombok.AllArgsConstructor;
@@ -21,8 +23,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -35,10 +36,11 @@ public class HotelService {
         List<MultipartFile> imagesFiles = data.getImagesFiles();
         List<String> images = data.getImagesLinks();
         Hotel hotel = hotelRepository.save(hotelMapper.mapToModel(data, images));
-        if(images.size() ==0 && imagesFiles.size() > 0){
+        if(imagesFiles.size() > 0){
             String id = hotel.getId().toString();
             List<String> imagesLinks = (List<String>) imagesFiles.stream().map(e -> fileUploadService
                     .getUploadedFileString(id, e));
+            imagesLinks.addAll(hotel.getImages());
             hotel.setImages(imagesLinks);
             hotel = hotelRepository.save(hotel);
         }
@@ -117,7 +119,26 @@ public class HotelService {
         return hotelsPage.getContent();
     }
 
-    public Long countHotelsByCity(String city){
+    public Integer countByCity(String city){
         return hotelRepository.countByCity(city);
+    }
+
+    public List<Map<String, Object>> countByType(){
+        List<Map<String, Object>> responseData = new ArrayList<>();
+        Arrays.asList(PropertyType.values()).forEach(e -> {
+            responseData.add(createTypeMap(String.valueOf(e), hotelRepository.countByType(e)));
+        });
+        return responseData;
+    }
+
+    public Map<String, Object> createTypeMap(String type, Integer count){
+        Map<String, Object> typeMap = new HashMap<>();
+        typeMap.put("type", type);
+        typeMap.put("count", count);
+        return typeMap;
+    }
+
+    public List<Room> getHotelRooms(Long hotelId){
+        return hotelRepository.getHotelRooms(hotelId);
     }
 }

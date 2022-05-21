@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll() //Don't validate these requests.
-                .antMatchers("/api/admin/**").hasAnyAuthority("Admin")
+                .antMatchers("/api/admin/**").hasAnyAuthority("admin")
                 .anyRequest().authenticated() //Validate all other requests
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS); //Here we are asking spring security not to manage session.

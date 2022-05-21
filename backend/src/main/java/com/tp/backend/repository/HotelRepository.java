@@ -1,10 +1,15 @@
 package com.tp.backend.repository;
 
+import com.tp.backend.enums.PropertyType;
 import com.tp.backend.model.Hotel;
+import com.tp.backend.model.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long>,
@@ -19,5 +24,9 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>,
     queries(in Repository) as "Slice". Search for "PagingAndSortingRepository" interface and "Slice" class for details.
     */
 
-    Long countByCity(String city);
+    Integer countByCity(String city);
+    Integer countByType(PropertyType type);
+
+    @Query("SELECT h FROM Hotel h JOIN FETCH h.rooms WHERE h.id = (:hotelId)")
+    List<Room> getHotelRooms(Long hotelId);
 }
