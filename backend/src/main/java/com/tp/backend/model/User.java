@@ -46,6 +46,9 @@ public class User extends DatabaseEntity{
     @Column(name = "is_active")
     private Boolean isActive;
 
+    @Column(name = "is_email_verified")
+    private Boolean isEmailVerified;
+
     @Enumerated(EnumType.STRING)
     @Column(name= "usertype")
     private UserType userType;

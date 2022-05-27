@@ -1,11 +1,16 @@
 package com.tp.backend.service;
 
 import com.tp.backend.dto.*;
+import com.tp.backend.enums.TokenType;
+import com.tp.backend.enums.UserType;
 import com.tp.backend.mapper.UserMapper;
+import com.tp.backend.model.NotificationEmail;
 import com.tp.backend.model.User;
+import com.tp.backend.model.VerificationToken;
 import com.tp.backend.repository.UserRepository;
+import com.tp.backend.repository.VerificationTokenRepository;
 import com.tp.backend.security.JwtProvider;
-import exception.BackendException;
+import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -29,39 +35,66 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
     private final JwtProvider jwtProvider;
+    private final CommonService commonService;
+    private final MailContentBuilder mailContentBuilder;
+    private final MailService mailService;
+    private final VerificationTokenRepository verificationTokenRepository;
 
-    public UserResponseDto createOrUpdateUser(UserRequestDto userRequestDto) {
-        //This api will be used for creating user as well updating user data. So we have called this
-        //function from AuthController "signup" method as well as UserController "updateUser" method.
-        Long id = userRequestDto.getId();
-        User existingUser = null;
-        if (id != null) {
-            existingUser = userRepository.findById(id).orElseThrow(() -> new
-                    BackendException("User with given id doesn't exist."));
-        }
+    public void signup(UserRequestDto userRequestDto) {
         Optional<User> emailUser = userRepository.findByEmail(userRequestDto.getEmail());
-        if ((id == null && emailUser.isPresent()) ||
-                (id != null && emailUser.isPresent() && emailUser.get().getId() != id)) {
-            throw new BackendException("Email already exist.");
+        if (emailUser.isPresent()) {
+            throw new CustomException("Email already exist.");
         }
-        //We will not use this API to update password. So updating password only if existing user is null;
-        String password = null;
-        if(existingUser == null) {
-            password = passwordEncoder.encode(userRequestDto.getPassword());
-        } else {
-            password = existingUser.getPassword();
-        }
+        String password = passwordEncoder.encode(userRequestDto.getPassword());
         String imageUrl = userRequestDto.getImageLink();
+        if(userRequestDto.getUserType() == null){
+           userRequestDto.setUserType(UserType.User);
+        }
         User user = userMapper.mapToModel(userRequestDto, imageUrl, password);
+        user.setIsActive(false);
+        user.setIsEmailVerified(false);
         user = userRepository.save(user);
         MultipartFile file = userRequestDto.getImageFile();
         if (file != null) {
-            id = user.getId();
+            Long id = user.getId();
             String image = fileUploadService.getUploadedFileString(id.toString(), file);
             user.setImg(image);
             user = userRepository.save(user);
         }
-        return userMapper.mapToDto(user);
+        sendAccountActivationEmail(user);
+    }
+
+    public void resendActivationEmail(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new CustomException("User not found."));
+        if (user.getIsActive() && user.getIsEmailVerified()){
+            throw new CustomException("User Account is already activated");
+        } else {
+            sendAccountActivationEmail(user);
+        }
+    }
+
+    public void verifyAccount(String token){
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+                .orElseThrow(() -> new CustomException("Invalid token"));
+        if(isTokenExpired(verificationToken.getCreatedAt()) == false){
+            throw new CustomException("Token is expired.");
+        }
+        fetchUserAndEnable(verificationToken);
+    }
+
+    public boolean isTokenExpired(LocalDateTime createdAt){
+        //We will declare a token as expired if it was created before 72 hours
+        return createdAt.plusHours(72).isAfter(LocalDateTime.now());
+    }
+
+    public void fetchUserAndEnable(VerificationToken verificationToken){
+        Optional<User> tokenUser = userRepository.findById(verificationToken.getUser().getId());
+        tokenUser.orElseThrow(() -> new CustomException("User not found. Please signup again."));
+        User user = tokenUser.get();
+        user.setIsActive(true);
+        user.setIsEmailVerified(true);
+        userRepository.save(user);
+        verificationTokenRepository.deleteById(verificationToken.getId());
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto){
@@ -70,7 +103,7 @@ public class AuthService {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDto.getEmail());
         final String jwtToken = jwtProvider.generateToken(userDetails);
         User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(() ->
-                new BackendException("User not found."));
+                new CustomException("User not found."));
         return new LoginResponseDto.LoginResponseBuilder()
                 .id(user.getId())
                 .name(user.getName())
@@ -84,16 +117,15 @@ public class AuthService {
                 .build();
     }
 
-    public String updatePassword(UpdatePasswordRequestDto updatePasswordRequestDto){
-        User user = userRepository.findById(updatePasswordRequestDto.getId()).orElseThrow(() ->
-                new BackendException("User with given id not found."));
-        boolean passwordMatches = passwordEncoder.matches(updatePasswordRequestDto.getOldPassword(),
-                user.getPassword());
-        if(!passwordMatches){
-            throw new BackendException("Invalid password.");
-        }
-        user.setPassword(passwordEncoder.encode(updatePasswordRequestDto.getNewPassword()));
-        userRepository.save(user);
-        return "Password updated successfully";
+    private void sendAccountActivationEmail(User user){
+        String token = commonService.generateVerificationToken(user, TokenType.AccountActivation);
+        String url = "http://localhost:8080/api/auth/account-verification/"+token;
+        String btnName = "Activate";
+        String text = "Thanks for signing up in Booking App. Please click on the button below to activate your account.";
+        String msg = mailContentBuilder.build(text, url, btnName);
+
+        String subject = "Please Activate your account.";
+        String recipient = user.getEmail();
+        mailService.sendMail(new NotificationEmail(subject, recipient, msg));
     }
 }

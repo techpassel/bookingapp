@@ -3,7 +3,7 @@ package com.tp.backend.controller;
 import com.tp.backend.dto.LoginRequestDto;
 import com.tp.backend.dto.UserRequestDto;
 import com.tp.backend.service.AuthService;
-import exception.BackendException;
+import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,9 @@ public class AuthController {
     @RequestMapping(method = RequestMethod.POST, value = "")
     public ResponseEntity<?> signup(@RequestBody UserRequestDto userRequestDto){
         try{
-            authService.createOrUpdateUser(userRequestDto);
+            authService.signup(userRequestDto);
             return new ResponseEntity<>("User created successfully", HttpStatus.OK);
-        } catch (BackendException e){
+        } catch (CustomException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -33,7 +33,7 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto){
         try{
             return new ResponseEntity<>(authService.login(loginRequestDto), HttpStatus.OK);
-        } catch (BackendException e){
+        } catch (CustomException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);

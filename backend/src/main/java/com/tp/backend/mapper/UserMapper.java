@@ -12,7 +12,7 @@ import org.mapstruct.ReportingPolicy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         componentModel = "spring")
 public abstract class UserMapper {
-    @Mapping(target = "id", source = "signupRequestDto.id")
+    @Mapping(target = "id", source = "userRequestDto.id")
     @Mapping(target = "img", source = "img")
     @Mapping(target = "password", source = "password")
     public abstract User mapToModel(UserRequestDto userRequestDto, String img, String password);

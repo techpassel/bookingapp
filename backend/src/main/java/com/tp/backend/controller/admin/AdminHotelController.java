@@ -2,7 +2,7 @@ package com.tp.backend.controller.admin;
 
 import com.tp.backend.dto.HotelRequestDto;
 import com.tp.backend.service.HotelService;
-import exception.BackendException;
+import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class AdminHotelController {
     public ResponseEntity<?> createHotel(@RequestBody HotelRequestDto data){
         try{
             return new ResponseEntity<>(hotelService.createHotel(data), HttpStatus.OK);
-        } catch (BackendException e){
+        } catch (CustomException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -29,7 +29,7 @@ public class AdminHotelController {
     public ResponseEntity<?> deleteHotel(@PathVariable Long id){
         try{
             return new ResponseEntity<>(hotelService.deleteHotel(id), HttpStatus.OK);
-        } catch (BackendException e){
+        } catch (CustomException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);

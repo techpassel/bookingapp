@@ -1,6 +1,6 @@
 package com.tp.backend.security;
 
-import exception.BackendException;
+import com.tp.backend.exception.CustomException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -65,7 +65,7 @@ public class JwtProvider {
             InputStream resourceAsStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(keyStorePath);
             keyStore.load(resourceAsStream, keyStorePassword.toCharArray());
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
-            throw new BackendException("Exception occurred while loading keystore", e);
+            throw new CustomException("Exception occurred while loading keystore", e);
         }
     }
 
@@ -82,7 +82,7 @@ public class JwtProvider {
         try {
             return (PrivateKey) keyStore.getKey(keyAlias, privateKeyPassphrase.toCharArray());
         } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
-            throw new BackendException("Exception occurred while retrieving private key from keystore", e);
+            throw new CustomException("Exception occurred while retrieving private key from keystore", e);
         }
     }
 
@@ -91,7 +91,7 @@ public class JwtProvider {
             return keyStore.getCertificate(keyAlias).getPublicKey();
         } catch (KeyStoreException e) {
             System.out.println(e.getMessage()+"*****");
-            throw new BackendException("Exception occurred while retrieving public key from keystore", e);
+            throw new CustomException("Exception occurred while retrieving public key from keystore", e);
         }
     }
 

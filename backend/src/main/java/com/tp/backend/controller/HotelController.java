@@ -2,7 +2,7 @@ package com.tp.backend.controller;
 
 import com.tp.backend.dto.HotelSearchQueryDto;
 import com.tp.backend.service.HotelService;
-import exception.BackendException;
+import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class HotelController {
     public ResponseEntity<?> getHotel(@PathVariable Long id){
         try{
             return new ResponseEntity<>(hotelService.getHotelById(id), HttpStatus.OK);
-        } catch (BackendException e){
+        } catch (CustomException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -29,7 +29,7 @@ public class HotelController {
     public ResponseEntity<?> searchHotel(@RequestBody HotelSearchQueryDto queryDate){
         try{
             return new ResponseEntity<>(hotelService.searchHotel(queryDate), HttpStatus.OK);
-        } catch (BackendException e){
+        } catch (CustomException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -40,7 +40,7 @@ public class HotelController {
     public ResponseEntity<?> countByCity(@PathVariable String cityName){
         try{
             return new ResponseEntity<>(hotelService.countByCity(cityName), HttpStatus.OK);
-        } catch (BackendException e){
+        } catch (CustomException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -51,7 +51,7 @@ public class HotelController {
     public ResponseEntity<?> countByType(){
         try{
             return new ResponseEntity<>(hotelService.countByType(), HttpStatus.OK);
-        } catch (BackendException e){
+        } catch (CustomException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e){
             return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);

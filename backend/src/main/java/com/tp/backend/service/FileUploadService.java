@@ -4,7 +4,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import exception.BackendException;
+import com.tp.backend.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,12 +38,12 @@ public class FileUploadService {
     public String uploadFile(String keyName, MultipartFile file) {
         //check if the file is empty
         if (file.isEmpty()) {
-            throw new BackendException("Cannot upload empty file");
+            throw new CustomException("Cannot upload empty file");
         }
         //Check if the file is an image
         String mimeType = file.getContentType();
         if (!mimeType.contains("image/") && !mimeType.equals("application/pdf")) {
-            throw new BackendException("Unsupported file type for.Only images and pdf are supported");
+            throw new CustomException("Unsupported file type for.Only images and pdf are supported");
         }
 
         try {
@@ -59,15 +59,15 @@ public class FileUploadService {
         } catch (IOException ioe) {
             String err = "IOException: " + ioe.getMessage();
             log.error(err);
-            throw new BackendException("Error in uploading " + keyName + ": " + err);
+            throw new CustomException("Error in uploading " + keyName + ": " + err);
         } catch (AmazonServiceException serviceException) {
             String err = "AmazonServiceException: " + serviceException.getMessage();
             log.error(err);
-            throw new BackendException("Error in uploading " + keyName + ": " + err);
+            throw new CustomException("Error in uploading " + keyName + ": " + err);
         } catch (AmazonClientException clientException) {
             String err = "AmazonClientException: " + clientException.getMessage();
             log.error(err);
-            throw new BackendException("Error in uploading " + keyName + ": " + err);
+            throw new CustomException("Error in uploading " + keyName + ": " + err);
         }
     }
 
@@ -76,7 +76,7 @@ public class FileUploadService {
             amazonS3Client.deleteObject(bucketPath, keyName);
         } catch (Exception e) {
             log.error("Error in deleting file - " + keyName + ". Error details - " + e.getMessage());
-            throw new BackendException("Error in deleting file - " + keyName);
+            throw new CustomException("Error in deleting file - " + keyName);
         }
     }
 
@@ -109,7 +109,7 @@ public class FileUploadService {
             //int successfulDeletes = delObjRes.getDeletedObjects().size();
         } catch (Exception e) {
             log.error("Error in deleting folder: "+e.getMessage());
-            throw new BackendException("Error in deleting folder - " + folderPrefix);
+            throw new CustomException("Error in deleting folder - " + folderPrefix);
         }
     }
 

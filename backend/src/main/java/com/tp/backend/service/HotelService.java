@@ -8,7 +8,7 @@ import com.tp.backend.mapper.HotelMapper;
 import com.tp.backend.model.Hotel;
 import com.tp.backend.model.Room;
 import com.tp.backend.repository.HotelRepository;
-import exception.BackendException;
+import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -35,7 +35,9 @@ public class HotelService {
     public HotelResponseDto createHotel(HotelRequestDto data){
         List<MultipartFile> imagesFiles = data.getImagesFiles();
         List<String> images = data.getImagesLinks();
-        Hotel hotel = hotelRepository.save(hotelMapper.mapToModel(data, images));
+        List<Room> rooms = new ArrayList<>();
+        //Here We have stored rooms as empty list. We will implement functionality to add rooms in RoomService.
+        Hotel hotel = hotelRepository.save(hotelMapper.mapToModel(data, images, rooms));
         if(imagesFiles.size() > 0){
             String id = hotel.getId().toString();
             List<String> imagesLinks = (List<String>) imagesFiles.stream().map(e -> fileUploadService
@@ -52,7 +54,7 @@ public class HotelService {
             hotelRepository.deleteById(id);
             return "Hotel has been deleted.";
         } catch (EmptyResultDataAccessException e) {
-            throw new BackendException("Staff with given id doesn't exist.", e);
+            throw new CustomException("Staff with given id doesn't exist.", e);
         }
     }
 
@@ -61,11 +63,11 @@ public class HotelService {
     }
 
     public List<Hotel> searchHotel(HotelSearchQueryDto queryData){
-        Integer pageNo = queryData.getPageNo();
-        Integer pageSize = queryData.getPageSize();
+        int pageNo = queryData.getPageNo();
+        int pageSize = queryData.getPageSize();
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Integer minPrice = queryData.getMinPrice();
-        Integer maxPrice = queryData.getMaxPrice();
+        int minPrice = queryData.getMinPrice();
+        int maxPrice = queryData.getMaxPrice();
         /*
             In PagingAndSortingRepository type repository we can send data of type "Pageable" or "Sort" for
             pagination and sorting. Syntax is as follows. Apply suitable one as per your requirement.

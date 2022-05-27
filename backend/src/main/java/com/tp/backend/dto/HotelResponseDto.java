@@ -19,7 +19,7 @@ public class HotelResponseDto {
     private String title;
     private String description;
     private List<String> images;
-    private List<String> rooms;
+    //private List<String> rooms;
     private Integer minPrice;
     private Byte rating;
     private Boolean isFeatured;

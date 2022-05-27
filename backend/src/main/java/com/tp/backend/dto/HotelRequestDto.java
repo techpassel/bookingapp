@@ -21,7 +21,8 @@ public class HotelRequestDto {
     private String description;
     private List<MultipartFile> imagesFiles;
     private List<String> imagesLinks;
-    private List<String> rooms;
+    // Here We are not creating fields for "rooms". We will implement functionality to add rooms in RoomService and
+    // will use RoomRequestDto for that purpose;.
     private Integer minPrice;
     private Byte rating;
     private Boolean isFeatured;
