@@ -1,4 +1,4 @@
-package com.tp.backend.controller;
+package com.tp.backend.controller.user;
 
 import com.tp.backend.dto.UpdatePasswordRequestDto;
 import com.tp.backend.dto.UserRequestDto;
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/:id")
-    public ResponseEntity<?> getUsers(@PathVariable Long id){
+    public ResponseEntity<?> getUserById(@PathVariable Long id){
         try{
             return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
         } catch (CustomException e){
@@ -64,6 +64,7 @@ public class UserController {
         }
     }
 
+    //This api is used for updating user email
     @RequestMapping(method = RequestMethod.POST, value = "/email")
     public ResponseEntity<?> sendUpdateEmailVerificationToken(@RequestBody Map<String, Object> data){
         try{

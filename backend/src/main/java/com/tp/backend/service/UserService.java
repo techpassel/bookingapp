@@ -42,8 +42,8 @@ public class UserService {
         User existingUser = userRepository.findById(id).orElseThrow(() -> new
                 CustomException("User with given id doesn't exist."));
         //We will not use this API to update password or email.
-        if ((userRequestDto.getPassword() != null && userRequestDto.getPassword() != "") ||
-                (userRequestDto.getEmail() != null && userRequestDto.getEmail() != "")) {
+        if ((userRequestDto.getPassword() != null && !userRequestDto.getPassword().equals("")) ||
+                (userRequestDto.getEmail() != null && !userRequestDto.getEmail().equals(""))) {
             throw new CustomException("Updating email and password is not allowed using this api.");
         }
         userRequestDto.setEmail(existingUser.getEmail());
@@ -53,7 +53,7 @@ public class UserService {
             newImageUrl = fileUploadService.getUploadedFileString(id.toString(), file);
         }
         String imageUrl = newImageUrl != null ? newImageUrl :
-                (userRequestDto.getImageLink() != null && userRequestDto.getImageLink() != "") ?
+                (userRequestDto.getImageLink() != null && !userRequestDto.getImageLink().equals("")) ?
                         userRequestDto.getImageLink() : existingUser.getImg();
         User user = userMapper.mapToModel(userRequestDto, imageUrl, existingUser.getPassword());
         user = userRepository.save(user);
@@ -97,7 +97,7 @@ public class UserService {
         String url = "http://localhost:8080/api/user/update-email/"+token;
         String btnName = "Verify";
         String text = "Please click on the button below to verify your email and register it with " +
-                "your account in Bookingapp.";
+                "your account in BookingApp.";
         String msg = mailContentBuilder.build(text, url, btnName);
         String subject = "Please Verify your email.";
         String recipient = user.getEmail();
@@ -116,7 +116,7 @@ public class UserService {
 
     public List<UserResponseDto> getUsers(int pageNo, int pageSize){
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by("createdAt"));
-        return userRepository.findAll(pageable).stream().map(e -> userMapper.mapToDto(e)).collect(Collectors.toList());
+        return userRepository.findAll(pageable).stream().map(userMapper::mapToDto).collect(Collectors.toList());
     }
 
     public UserResponseDto getUserById(Long id){

@@ -1,5 +1,4 @@
 package com.tp.backend.exception;
-import java.security.GeneralSecurityException;
 
 public class CustomException extends RuntimeException {
     public CustomException(String message){

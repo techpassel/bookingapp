@@ -1,4 +1,4 @@
-package com.tp.backend.controller;
+package com.tp.backend.controller.user;
 
 import com.tp.backend.dto.LoginRequestDto;
 import com.tp.backend.dto.UserRequestDto;

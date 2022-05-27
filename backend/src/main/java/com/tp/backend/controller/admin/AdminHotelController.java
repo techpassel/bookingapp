@@ -16,6 +16,7 @@ public class AdminHotelController {
 
     @RequestMapping(method = RequestMethod.POST, value = "")
     public ResponseEntity<?> createHotel(@RequestBody HotelRequestDto data){
+        //This api will work for create hotel as well as update hotel
         try{
             return new ResponseEntity<>(hotelService.createHotel(data), HttpStatus.OK);
         } catch (CustomException e){

@@ -15,6 +15,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +55,7 @@ public class HotelService {
             hotelRepository.deleteById(id);
             return "Hotel has been deleted.";
         } catch (EmptyResultDataAccessException e) {
-            throw new CustomException("Staff with given id doesn't exist.", e);
+            throw new CustomException("Hotel with given id doesn't exist.", e);
         }
     }
 
@@ -134,6 +135,7 @@ public class HotelService {
     }
 
     public Map<String, Object> createTypeMap(String type, Integer count){
+        //This method is called from countByType() method
         Map<String, Object> typeMap = new HashMap<>();
         typeMap.put("type", type);
         typeMap.put("count", count);
