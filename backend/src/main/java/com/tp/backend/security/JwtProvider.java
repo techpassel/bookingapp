@@ -90,7 +90,6 @@ public class JwtProvider {
         try {
             return keyStore.getCertificate(keyAlias).getPublicKey();
         } catch (KeyStoreException e) {
-            System.out.println(e.getMessage()+"*****");
             throw new CustomException("Exception occurred while retrieving public key from keystore", e);
         }
     }
@@ -113,11 +112,10 @@ public class JwtProvider {
             return Jwts.parser().setSigningKey(getPublickey()).parseClaimsJws(token).getBody();
             //Handle exceptions as per your requirement.
         } catch (ExpiredJwtException e) {
-            System.out.println("Token expired ");
+            throw new CustomException("Token Expired.");
         } catch(Exception e){
-            System.out.println("Some other exception in JWT parsing ");
+            throw new CustomException("Some other exception in JWT parsing ");
         }
-        return null;
     }
 
     //To extract the username from token

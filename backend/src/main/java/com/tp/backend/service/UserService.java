@@ -4,6 +4,7 @@ import com.tp.backend.dto.UpdatePasswordRequestDto;
 import com.tp.backend.dto.UserRequestDto;
 import com.tp.backend.dto.UserResponseDto;
 import com.tp.backend.enums.TokenType;
+import com.tp.backend.enums.UserType;
 import com.tp.backend.mapper.UserMapper;
 import com.tp.backend.model.NotificationEmail;
 import com.tp.backend.model.User;
@@ -11,7 +12,6 @@ import com.tp.backend.model.VerificationToken;
 import com.tp.backend.repository.UserRepository;
 import com.tp.backend.repository.VerificationTokenRepository;
 import com.tp.backend.exception.CustomException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -67,7 +67,9 @@ public class UserService {
         String imageUrl = newImageUrl != null ? newImageUrl :
                 (userRequestDto.getImageLink() != null && !userRequestDto.getImageLink().equals("")) ?
                         userRequestDto.getImageLink() : existingUser.getImg();
-        User user = userMapper.mapToModel(userRequestDto, imageUrl, existingUser.getPassword());
+        UserType userType = userRequestDto.getUserType() != null || userRequestDto.getUserType() != ""?
+                UserType.valueOf(userRequestDto.getUserType()) : existingUser.getUserType();
+        User user = userMapper.mapToModel(userRequestDto, imageUrl, existingUser.getPassword(), userType);
         user = userRepository.save(user);
         return userMapper.mapToDto(user);
     }

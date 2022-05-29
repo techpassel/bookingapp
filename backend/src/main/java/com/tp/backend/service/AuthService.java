@@ -63,10 +63,13 @@ public class AuthService {
         }
         String password = passwordEncoder.encode(userRequestDto.getPassword());
         String imageUrl = userRequestDto.getImageLink();
+        UserType userType = null;
         if(userRequestDto.getUserType() == null){
-           userRequestDto.setUserType(UserType.User);
+           userType = UserType.User;
+        } else {
+            userType = UserType.valueOf(userRequestDto.getUserType());
         }
-        User user = userMapper.mapToModel(userRequestDto, imageUrl, password);
+        User user = userMapper.mapToModel(userRequestDto, imageUrl, password, userType);
         user.setIsActive(false);
         user.setIsEmailVerified(false);
         user = userRepository.save(user);
@@ -166,7 +169,6 @@ public class AuthService {
     private void sendAccountActivationEmail(User user){
         String token = commonService.generateVerificationToken(user, TokenType.AccountActivation);
         String url = serverBaseUrl + "/auth/account-verification/"+token;
-        System.out.println(url);
         String btnName = "Activate";
         String text = "Thanks for signing up in Booking App. Please click on the button below to activate your account.";
         String msg = mailContentBuilder.build(text, url, btnName);

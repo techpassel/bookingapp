@@ -32,10 +32,8 @@ public class User extends DatabaseEntity{
     @NotBlank(message = "Password is required")
     private String password;
 
-    @NotBlank(message = "Country is required")
     private String country;
 
-    @NotBlank(message = "City is required")
     private String city;
 
     private String img;

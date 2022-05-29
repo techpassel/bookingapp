@@ -2,6 +2,7 @@ package com.tp.backend.mapper;
 
 import com.tp.backend.dto.UserRequestDto;
 import com.tp.backend.dto.UserResponseDto;
+import com.tp.backend.enums.UserType;
 import com.tp.backend.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,7 +16,8 @@ public abstract class UserMapper {
     @Mapping(target = "id", source = "userRequestDto.id")
     @Mapping(target = "img", source = "img")
     @Mapping(target = "password", source = "password")
-    public abstract User mapToModel(UserRequestDto userRequestDto, String img, String password);
+    @Mapping(target = "userType", source = "userType")
+    public abstract User mapToModel(UserRequestDto userRequestDto, String img, String password, UserType userType);
 
     public abstract UserResponseDto mapToDto(User user);
 }

@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
@@ -19,15 +21,9 @@ import java.util.Map;
 public class AuthController {
     private final AuthService authService;
     @RequestMapping(method = RequestMethod.POST, value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> signup(@ModelAttribute UserRequestDto userRequestDto){
-        try{
-            authService.signup(userRequestDto);
-            return new ResponseEntity<>("User created successfully", HttpStatus.OK);
-        } catch (CustomException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<?> signup(@Valid @ModelAttribute UserRequestDto userRequestDto){
+        authService.signup(userRequestDto);
+        return new ResponseEntity<>("User created successfully", HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/login")
