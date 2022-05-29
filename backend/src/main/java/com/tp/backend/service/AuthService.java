@@ -11,7 +11,6 @@ import com.tp.backend.repository.UserRepository;
 import com.tp.backend.repository.VerificationTokenRepository;
 import com.tp.backend.security.JwtProvider;
 import com.tp.backend.exception.CustomException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
