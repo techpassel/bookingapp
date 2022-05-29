@@ -2,7 +2,6 @@ package com.tp.backend.controller.user;
 
 import com.tp.backend.dto.UpdatePasswordRequestDto;
 import com.tp.backend.dto.UserRequestDto;
-import com.tp.backend.service.AuthService;
 import com.tp.backend.service.UserService;
 import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;

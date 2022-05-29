@@ -5,7 +5,6 @@ import com.tp.backend.dto.RoomNumberDto;
 import com.tp.backend.model.Hotel;
 import com.tp.backend.model.Room;
 import com.tp.backend.model.RoomNumber;
-import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;

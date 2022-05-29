@@ -13,7 +13,11 @@ import com.tp.backend.security.JwtProvider;
 import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,21 +28,34 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@AllArgsConstructor
 @Service
 @Slf4j
 public class AuthService {
-    private final FileUploadService fileUploadService;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
-    private final JwtProvider jwtProvider;
-    private final CommonService commonService;
-    private final MailContentBuilder mailContentBuilder;
-    private final MailService mailService;
-    private final VerificationTokenRepository verificationTokenRepository;
+    @Autowired
+    private FileUploadService fileUploadService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtProvider jwtProvider;
+    @Autowired
+    private CommonService commonService;
+    @Autowired
+    private MailContentBuilder mailContentBuilder;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @Value("${app.server.baseurl}")
+    private String serverBaseUrl;
 
     public void signup(UserRequestDto userRequestDto) {
         Optional<User> emailUser = userRepository.findByEmail(userRequestDto.getEmail());
@@ -98,13 +115,28 @@ public class AuthService {
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto){
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(),
-                loginRequestDto.getPassword()));
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDto.getEmail());
-        final String jwtToken = jwtProvider.generateToken(userDetails);
-        User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(() ->
-                new CustomException("User not found."));
-        return new LoginResponseDto.LoginResponseBuilder()
+        User user = userRepository.findByEmail(loginRequestDto.getUsername()).orElseThrow(() ->
+                new CustomException("UserNotFoundException"));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(),
+                    loginRequestDto.getPassword()));
+        } catch (DisabledException e) {
+            if (user.getIsEmailVerified() == false) {
+                throw new CustomException("EmailNotVerifiedException");
+            } else {
+                throw new DisabledException("InactiveUserException");
+            }
+        } catch (BadCredentialsException e) {
+            // Since we have already checked if email exist or not above.
+            // So throwing this error here simply means password is incorrect.
+            throw new CustomException("InvalidPasswordException");
+        }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDto.getUsername());
+        String jwtToken = jwtProvider.generateToken(userDetails);
+
+        //If you are using manual implementation of Builder pattern
+        /*
+        LoginResponseDto response = new LoginResponseDto.LoginResponseBuilder()
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
@@ -115,11 +147,27 @@ public class AuthService {
                 .userType(user.getUserType())
                 .token(jwtToken)
                 .build();
+        */
+        //If you are using lombok @Builder annotation for builder pattern
+        LoginResponseDto response = LoginResponseDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .country(user.getCountry())
+                .city(user.getCity())
+                .img(user.getImg())
+                .phone(user.getPhone())
+                .userType(user.getUserType())
+                .token(jwtToken)
+                .build();
+
+        return response;
     }
 
     private void sendAccountActivationEmail(User user){
         String token = commonService.generateVerificationToken(user, TokenType.AccountActivation);
-        String url = "http://localhost:8080/api/auth/account-verification/"+token;
+        String url = serverBaseUrl + "/auth/account-verification/"+token;
+        System.out.println(url);
         String btnName = "Activate";
         String text = "Thanks for signing up in Booking App. Please click on the button below to activate your account.";
         String msg = mailContentBuilder.build(text, url, btnName);

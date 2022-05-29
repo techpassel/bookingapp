@@ -5,6 +5,7 @@ import com.tp.backend.service.HotelService;
 import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 public class AdminHotelController {
     private final HotelService hotelService;
 
-    @RequestMapping(method = RequestMethod.POST, value = "")
-    public ResponseEntity<?> createHotel(@RequestBody HotelRequestDto data){
+    @RequestMapping(method = RequestMethod.POST, value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createHotel(@ModelAttribute HotelRequestDto data){
         //This api will work for create hotel as well as update hotel
         try{
             return new ResponseEntity<>(hotelService.createHotel(data), HttpStatus.OK);

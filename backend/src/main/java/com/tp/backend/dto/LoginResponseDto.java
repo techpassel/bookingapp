@@ -2,9 +2,11 @@ package com.tp.backend.dto;
 
 import com.tp.backend.enums.UserType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,9 +39,32 @@ public class LoginResponseDto {
         (#Note :- However it is recommended but not mandatory that we create an instance of the Builder class by
         passing all the mandatory fields(i.e. required fields) to its constructor. We can create instance of the Builder
         class by using it's no argument constructor also. In that case we have to set the values for all the required as
-         well as optional fields by calling the setter-like methods of the Builder class. We are doing same here.)
+        well as optional fields by calling the setter-like methods of the Builder class. We are doing same here.)
+        *******************************************************************************************************
+        But we can apply builder pattern with the help of lombok "@Builder" annotation also without even doing
+        any extra work what we have done here. In fact, we are going to use "@Builder" annotation here, but we have
+        also implemented it manually, so if you want to check we can achieve builder pattern manually, comment out
+        "@Builder" annotation and uncomment following code. But also note that In both these methods (i.e. in implementing
+        manually and in using lombok "@Builder" annotation) and there is slight difference in the way how they are used.
+        So we have used both in login function of "AuthService", however as expected we have commented out the code of
+        use of manual one.
+        ---------------------------------------------------------------------------------------------------------------
+        Here also note that "LoginResponseBuilder" is a static inner class of "LoginResponseDto". So keep it inside the
+        "LoginResponseDto" only and don't define it as a separate class.
+        ---------------------------------------------------------------------------------------------------------------
+        *******************************************************************************************************
      */
-    public LoginResponseDto(LoginResponseBuilder loginResponseBuilder) {
+    /*
+        public LoginResponseDto(LoginResponseBuilder loginResponseBuilder) {
+        this.id = loginResponseBuilder.id;
+        this.name = loginResponseBuilder.name;
+        this.email = loginResponseBuilder.email;
+        this.country = loginResponseBuilder.country;
+        this.city = loginResponseBuilder.city;
+        this.img = loginResponseBuilder.img;
+        this.phone = loginResponseBuilder.phone;
+        this.userType = loginResponseBuilder.userType;
+        this.token = loginResponseBuilder.token;
     }
 
     public static class LoginResponseBuilder
@@ -96,4 +121,5 @@ public class LoginResponseDto {
             return loginResponseDto;
         }
     }
+    */
 }

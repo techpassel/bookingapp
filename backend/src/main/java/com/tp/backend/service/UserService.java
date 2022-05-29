@@ -13,6 +13,8 @@ import com.tp.backend.repository.VerificationTokenRepository;
 import com.tp.backend.exception.CustomException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,17 +27,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class UserService {
-    private final FileUploadService fileUploadService;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final VerificationTokenRepository verificationTokenRepository;
-    private final CommonService commonService;
-    private final MailService mailService;
-    private final MailContentBuilder mailContentBuilder;
+    @Autowired
+    private FileUploadService fileUploadService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+    @Autowired
+    private CommonService commonService;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private MailContentBuilder mailContentBuilder;
+
+    @Value("${app.server.baseurl}")
+    private String serverBaseUrl;
 
     public UserResponseDto updateUser(UserRequestDto userRequestDto) {
         Long id = userRequestDto.getId();
@@ -94,7 +106,7 @@ public class UserService {
     }
 
     private void sendUpdateEmailVerificationEmail(User user, String token){
-        String url = "http://localhost:8080/api/user/update-email/"+token;
+        String url = serverBaseUrl + "/user/update-email/"+token;
         String btnName = "Verify";
         String text = "Please click on the button below to verify your email and register it with " +
                 "your account in BookingApp.";
