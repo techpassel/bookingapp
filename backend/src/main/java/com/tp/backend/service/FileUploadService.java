@@ -43,7 +43,7 @@ public class FileUploadService {
         //Check if the file is an image
         String mimeType = file.getContentType();
         if (!mimeType.contains("image/") && !mimeType.equals("application/pdf")) {
-            throw new CustomException("Unsupported file type for.Only images and pdf are supported");
+            throw new CustomException("Unsupported file type. Only images and pdf are supported");
         }
 
         try {

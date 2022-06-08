@@ -21,6 +21,6 @@ public class HotelResponseDto {
     private List<String> images;
     //private List<String> rooms;
     private Integer minPrice;
-    private Byte rating;
+    private String rating;
     private Boolean isFeatured;
 }

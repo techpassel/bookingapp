@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -25,6 +26,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -41,8 +43,8 @@ public class HotelService {
         Hotel hotel = hotelRepository.save(hotelMapper.mapToModel(data, images, rooms));
         if(imagesFiles.size() > 0){
             String id = hotel.getId().toString();
-            List<String> imagesLinks = (List<String>) imagesFiles.stream().map(e -> fileUploadService
-                    .getUploadedFileString(id, e));
+            List<String> imagesLinks = imagesFiles.stream().map(e -> fileUploadService
+                    .getUploadedFileString("property/"+id, e)).collect(Collectors.toList());
             imagesLinks.addAll(hotel.getImages());
             hotel.setImages(imagesLinks);
             hotel = hotelRepository.save(hotel);
@@ -59,8 +61,16 @@ public class HotelService {
         }
     }
 
-    public Hotel getHotelById(Long id){
-        return hotelRepository.getById(id);
+    @Transactional
+    /*
+        If you don't apply @Transactional here you will get following here.
+        org.hibernate.HibernateException: Unable to access lob stream
+        It is because for 'description' field we have applied @Lob which is used for LongText type data
+        As our description can be lengthy hence normal String type won't work for that field,
+        And hence used @Lob with that.
+    */
+    public HotelResponseDto getHotelById(Long id){
+        return hotelMapper.mapToDto(hotelRepository.getById(id));
     }
 
     public List<Hotel> searchHotel(HotelSearchQueryDto queryData){
@@ -122,8 +132,14 @@ public class HotelService {
         return hotelsPage.getContent();
     }
 
-    public Integer countByCity(String city){
-        return hotelRepository.countByCity(city);
+    public Map<String, Integer> countByCity(String cityNames){
+        String[] cities = cityNames.split(",");
+        Map<String, Integer> hotelsByCity = new HashMap<>();
+        for (String city: cities){
+            int count = hotelRepository.countByCityIgnoreCase(city.trim().toLowerCase());
+            hotelsByCity.put(city.trim(), count);
+        }
+        return hotelsByCity;
     }
 
     public List<Map<String, Object>> countByType(){
@@ -144,5 +160,13 @@ public class HotelService {
 
     public List<Room> getHotelRooms(Long hotelId){
         return hotelRepository.getHotelRooms(hotelId);
+    }
+
+    @Transactional
+    public List<HotelResponseDto> getFeaturedProperties(int responseSize) {
+        Pageable pageable = PageRequest.of(0, responseSize);
+        List<Hotel> hotels = hotelRepository.findByIsFeatured(true);
+        hotels.forEach(e -> System.out.println(e.getRating()));
+        return hotels.stream().map(hotelMapper::mapToDto).collect(Collectors.toList());
     }
 }

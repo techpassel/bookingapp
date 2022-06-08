@@ -25,6 +25,6 @@ public class HotelRequestDto {
     // Here We are not creating fields for "rooms". We will implement functionality to add rooms in RoomService and
     // will use RoomDto for that purpose;.
     private Integer minPrice;
-    private Byte rating;
+    private String rating;
     private Boolean isFeatured;
 }

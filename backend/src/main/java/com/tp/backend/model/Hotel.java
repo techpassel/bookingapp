@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class Hotel extends DatabaseEntity {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Type is required")
+    @NotNull(message = "Type is required")
     @Enumerated(EnumType.STRING)
     private PropertyType type;
 

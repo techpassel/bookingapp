@@ -18,23 +18,11 @@ public class AdminHotelController {
     @RequestMapping(method = RequestMethod.POST, value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createHotel(@ModelAttribute HotelRequestDto data){
         //This api will work for create hotel as well as update hotel
-        try{
-            return new ResponseEntity<>(hotelService.createHotel(data), HttpStatus.OK);
-        } catch (CustomException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(hotelService.createHotel(data), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/:id")
     public ResponseEntity<?> deleteHotel(@PathVariable Long id){
-        try{
-            return new ResponseEntity<>(hotelService.deleteHotel(id), HttpStatus.OK);
-        } catch (CustomException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
-            return new ResponseEntity<>("Some error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(hotelService.deleteHotel(id), HttpStatus.OK);
     }
 }

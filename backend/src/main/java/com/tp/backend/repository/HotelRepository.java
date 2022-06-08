@@ -29,9 +29,19 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>, JpaSpecific
     queries(in Repository) as "Slice". Search for "PagingAndSortingRepository" interface and "Slice" class for details.
     */
 
-    Integer countByCity(String city);
+    Integer countByCityIgnoreCase(String city);
+
+    @Query("SELECT count(h) FROM Hotel h WHERE lower(h.city) IN (:cities)")
+        //Here cities represents List of cities.And here we have applied "lower()" on "h.city" to make the
+        //city case-insensitive. We have already applied toLowerCase on cities in HotelService.So not applying
+        //here again on cities.
+    Integer countByAllCitiesIgnoreCase(List<String> cities);
+    // Created the above one but not using. However left it and didn't delete for future reference.
+
     Integer countByType(PropertyType type);
 
     @Query("SELECT h FROM Hotel h JOIN FETCH h.rooms WHERE h.id = (:hotelId)")
     List<Room> getHotelRooms(Long hotelId);
+
+    List<Hotel> findByIsFeatured(Boolean isFeatured);
 }
