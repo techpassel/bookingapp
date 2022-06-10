@@ -10,10 +10,12 @@
     flex: 1;
     gap: 10px;
     display: flex;
+    // flex-wrap: wrap;
     flex-direction: column;
 }
 
 .fpImg {
+    // width: 200px;
     width: 100%;
     object-fit: cover;
     height: 250px;

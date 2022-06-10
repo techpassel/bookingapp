@@ -52,9 +52,16 @@ public class HotelService {
         return hotelMapper.mapToDto(hotel);
     }
 
+    @Transactional
     public String deleteHotel(Long id){
         try {
+            Hotel hotel = hotelRepository.findById(id).orElseThrow(() ->
+                    new CustomException("Hotel not found."));
+            String imageFolderPrefix = "property/"+id;
             hotelRepository.deleteById(id);
+            if(hotel.getImages().size() > 0) {
+                fileUploadService.deleteFolderAllFiles(imageFolderPrefix);
+            }
             return "Hotel has been deleted.";
         } catch (EmptyResultDataAccessException e) {
             throw new CustomException("Hotel with given id doesn't exist.", e);
@@ -166,7 +173,6 @@ public class HotelService {
     public List<HotelResponseDto> getFeaturedProperties(int responseSize) {
         Pageable pageable = PageRequest.of(0, responseSize);
         List<Hotel> hotels = hotelRepository.findByIsFeatured(true);
-        hotels.forEach(e -> System.out.println(e.getRating()));
         return hotels.stream().map(hotelMapper::mapToDto).collect(Collectors.toList());
     }
 }

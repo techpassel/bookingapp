@@ -1,20 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const useFetch = (url) => {
+    const baseApiUrl = process.env.REACT_APP_BASE_API_URL;
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-
-    const token = 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhc2F1cmFiaDAwMUBnbWFpbC5jb20iLCJpYXQiOjE2NTQ3MDg0MTcsImV4cCI6MTY1NDc5ODQxN30.aDOzNCw_9bX7Imi38hJMwNTZamTKhFVN_uki9VjrlV_7vsfE2L0Vfy6AQdp70MFyoqZsSEdxUrKxFp8WGZs1Xe7BljgnFfU6TG5__Fgj8BrbHSS2w7jqJzV7OqegdAzX4wE29FuTEImjhDAFvAVBolCyCnSfSxxSoud7J3hhewx3NULfkjiimAGM92VdZxBz3emkJISfPhgAxiHdX8m2WVVRhoxxoFIYQQgfTzYCzr7X2-fFlvJji2TPMav8XcyexYY-kHpaEqVDZ0iG0lNi86Vwmo7mC1kXTl3b-EmX2hg4rnM9zWPXy7IbqVGsCD5e-pXhGQSNqa6fNH5SSGRHpw';
-
+    const token = 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhc2F1cmFiaDAwMUBnbWFpbC5jb20iLCJpYXQiOjE2NTQ4ODMwNzgsImV4cCI6MTY1NDk3MzA3OH0.Jh7uJ5Dzg-XoN_ohus8ra_A7tbFGBX0dqzmjmQpWYW0va2LIL9WILah8OdYl0ZrmnQbOOHsfOEpxHgBKdzVZlRe89IZoI3l3UpGr-aXVaJY2iM6YVsM34C69G6UD5EYOxeZB6f39Oo1HIFAGQOBWUqlgONfZoFc0X4ZthER1t5BmTGGwxe_UiaH3et7ynYU1dA8gLWO8Jd2fykhNepVzT75Qr3Q7GORXOZQicASF9ltONYX4tU9XkUbv1diE05CRQ5XdGDy8p2SgTISzW-DEkDTcL4YPlC6v1JoDyxIXqnnolw-OnW8P7xbMW8cqisPrfvdbddWwf3rcRgkbufVXxQ';
     const header = { Authorization: `Bearer ${token}` }
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(url, { headers: header });
+                const res = await axios.get(baseApiUrl + url, { headers: header });
                 setData(res.data);
             } catch (error) {
                 setError(error)
@@ -23,19 +23,18 @@ const useFetch = (url) => {
         }
         //Calling the above defined function. 
         fetchData();
-    }, [url])
+    }, [baseApiUrl, url])
 
     const reFetch = async () => {
         setLoading(true);
         try {
-            const res = await axios.get(url, { headers: header });
+            const res = await axios.get(baseApiUrl + url, { headers: header });
             setData(res.data);
         } catch (error) {
             setError(error)
         }
         setLoading(false);
     }
-
     return { data, loading, error, reFetch }
 }
 

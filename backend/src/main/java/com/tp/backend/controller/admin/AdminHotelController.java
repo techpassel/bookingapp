@@ -21,7 +21,7 @@ public class AdminHotelController {
         return new ResponseEntity<>(hotelService.createHotel(data), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/:id")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
     public ResponseEntity<?> deleteHotel(@PathVariable Long id){
         return new ResponseEntity<>(hotelService.deleteHotel(id), HttpStatus.OK);
     }

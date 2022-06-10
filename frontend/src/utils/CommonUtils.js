@@ -5,7 +5,7 @@ const getRatingRemark = (rating) => {
     } else if (rating < 4 && rating >= 3) {
         response = "Good"
     } else if (rating < 3 && rating >= 2) {
-        response = "Good"
+        response = "OK"
     } else if (rating < 2 && rating >= 1) {
         response = "Unsatisfactory"
     } else {
@@ -23,7 +23,6 @@ const formatCurrency = (amount) => {
         //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
         //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
     });
-
     return formatter.format(amount);
 }
 
