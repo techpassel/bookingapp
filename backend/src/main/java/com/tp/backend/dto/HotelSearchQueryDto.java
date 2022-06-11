@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HotelSearchQueryDto {
-    private Integer pageNo;
+    private Integer pageNo;     //0 for 1st page, 1 for 2nd page and so on.
     private Integer pageSize;
     private Integer minPrice;
     private Integer maxPrice;

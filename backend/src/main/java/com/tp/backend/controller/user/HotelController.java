@@ -18,7 +18,7 @@ public class HotelController {
         return new ResponseEntity<>(hotelService.getHotelById(id), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/search")
+    @RequestMapping(method = RequestMethod.POST, value = "/search")
     public ResponseEntity<?> searchHotel(@RequestBody HotelSearchQueryDto queryDate){
         return new ResponseEntity<>(hotelService.searchHotel(queryDate), HttpStatus.OK);
     }

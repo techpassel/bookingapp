@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { DateRange } from 'react-date-range'
 import SearchItem from '../../components/search-item/SearchItem'
 import { useOnOutsideClick } from '../../custom-hook/useOnOutsideClick'
+import useFetch from '../../hooks/useFetch'
 
 const HotelList = () => {
   const location = useLocation();
@@ -24,10 +25,28 @@ const HotelList = () => {
     room: 1
   });
   const [openDate, setOpenDate] = useState(false);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("")
+
   const { innerBorderRef } = useOnOutsideClick(() => setOpenDate(false));
 
   const handleOptionChange = (optionName, val) => {
     setOptions({ ...options, [optionName]: val })
+  }
+
+  const requestData = {
+    pageNo: pageNumber,
+    pageSize: pageSize,
+    city: destination,
+    minPrice: minPrice !== "" ? minPrice : null,
+    maxPrice: maxPrice !== "" ? maxPrice : null
+  }
+
+  const { data, loading, error, reFetch } = useFetch("/hotel/search", requestData, 'POST');
+  const handleSubmit = () => {
+    reFetch();
   }
 
   return (
@@ -61,13 +80,25 @@ const HotelList = () => {
                   <span className="lsOptionText">
                     Min price <small>per night</small>
                   </span>
-                  <input type="number" className="lsOptionInput" />
+                  <input
+                    type="number"
+                    min={0}
+                    className="lsOptionInput"
+                    value={minPrice}
+                    onChange={e => setMinPrice(e.target.value)}
+                  />
                 </div>
                 <div className="lsOptionItem">
                   <span className="lsOptionText">
                     Max price <small>per night</small>
                   </span>
-                  <input type="number" className="lsOptionInput" />
+                  <input
+                    type="number"
+                    min={0}
+                    className="lsOptionInput"
+                    value={maxPrice}
+                    onChange={e => setMaxPrice(e.target.value)}
+                  />
                 </div>
                 <div className="lsOptionItem">
                   <span className="lsOptionText">Adult</span>
@@ -101,17 +132,14 @@ const HotelList = () => {
                 </div>
               </div>
             </div>
-            <button>Search</button>
+            <button onClick={handleSubmit}>Search</button>
           </div>
           <div className="listResult">
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
+            {loading ? 'Loading.Please wait...' : <>
+              {data.map((item) => (
+                <SearchItem item={item} key={item.id} />
+              ))}
+            </>}
           </div>
         </div>
       </div>

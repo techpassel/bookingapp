@@ -3,6 +3,7 @@ package com.tp.backend.repository;
 import com.tp.backend.enums.PropertyType;
 import com.tp.backend.model.Hotel;
 import com.tp.backend.model.Room;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -43,5 +44,5 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>, JpaSpecific
     @Query("SELECT h FROM Hotel h JOIN FETCH h.rooms WHERE h.id = (:hotelId)")
     List<Room> getHotelRooms(Long hotelId);
 
-    List<Hotel> findByIsFeatured(Boolean isFeatured);
+    List<Hotel> findByIsFeatured(Boolean isFeatured, Pageable pageable);
 }

@@ -1,9 +1,11 @@
 .searchItem {
     border: 1px solid lightgray;
-    padding: 10px;border-radius: 5px;
+    padding: 15px 20px;
+    border-radius: 5px;
     display: flex;
-    justify-content: space-between;
+    // justify-content:
     gap: 20px;
+    align-items: center;
     margin-bottom: 20px;
 }
 
@@ -13,23 +15,30 @@
     object-fit: cover;
 }
 
+.siInfo {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
 .siDesc {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 9px;
     flex: 2;
 }
 
-.siTitle {
+.siName {
     font-size: 20px;
     color: #0071c2;
 }
 
 .siDistance {
+    margin-top: -8px;
     font-size: 12px;
 }
 
-.siTaxiOp{
+.siTaxiOp {
     font-size: 12px;
     background-color: #008009;
     color: white;
@@ -38,9 +47,13 @@
     border-radius: 5px;
 }
 
-.siSubtitle {
-    font-size: 12px;
+.siTitle {
+    font-size: 15px;
     font-weight: bold;
+}
+
+.siFeatures {
+    font-size: 15px;
 }
 
 .siFeature {
@@ -67,14 +80,16 @@
 
 .siRating {
     display: flex;
-    justify-content: space-between;
+    gap: 7px;
+    justify-content: right;
+    align-items: center;
 }
 
-.siRating>span {
+.siRating > span {
     font-weight: 500;
 }
 
-.siRating>button {
+.siRating > button {
     background-color: #003580;
     color: white;
     padding: 5px;
@@ -107,5 +122,3 @@
     cursor: pointer;
     border-radius: 5px;
 }
-
-
