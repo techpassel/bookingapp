@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Header from '../../components/header/Header'
 import Navbar from '../../components/navbar/Navbar'
@@ -6,8 +6,8 @@ import './HotelList.scss'
 import { format } from 'date-fns';
 import { DateRange } from 'react-date-range'
 import SearchItem from '../../components/search-item/SearchItem'
-import { useOnOutsideClick } from '../../custom-hook/useOnOutsideClick'
 import useFetch from '../../hooks/useFetch'
+import { useRef } from 'react'
 
 const HotelList = () => {
   const location = useLocation();
@@ -30,7 +30,23 @@ const HotelList = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("")
 
-  const { innerBorderRef } = useOnOutsideClick(() => setOpenDate(false));
+  const innerBorderRef = useRef();
+
+  const onOutsideClick = event => {
+    if (
+      innerBorderRef.current &&
+      !innerBorderRef.current.contains(event.target)
+    ) {
+      setOpenDate(false);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("click", onOutsideClick, true);
+    return () => {
+      document.removeEventListener("click", onOutsideClick, true);
+    };
+  }, [])
 
   const handleOptionChange = (optionName, val) => {
     setOptions({ ...options, [optionName]: val })

@@ -1,13 +1,13 @@
 import { faBed, faCalendar, faCar, faMountainSun, faPerson, faPlane, faTaxi } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './Header.scss'
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { useOnOutsideClick } from '../../custom-hook/useOnOutsideClick';
+import { useRef } from 'react';
 
 const Header = ({ type }) => {
     const [destination, setDestination] = useState("");
@@ -41,7 +41,32 @@ const Header = ({ type }) => {
         })
     }
 
-    const { innerBorderRef } = useOnOutsideClick(() => setOpenDate(false));
+    // const { innerBorderRef } = useOnOutsideClick(() => setOpenDate(false));
+    const innerBorderRef = useRef();
+    const optionsRef = useRef();
+
+    const onOutsideClick = event => {
+        if (
+            innerBorderRef.current &&
+            !innerBorderRef.current.contains(event.target)
+        ) {
+            setOpenDate(false);
+        }
+        if (
+            optionsRef.current &&
+            !optionsRef.current.contains(event.target)
+        ) {
+            setOpenOptions(false);
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener("click", onOutsideClick, true);
+        return () => {
+            document.removeEventListener("click", onOutsideClick, true);
+        };
+    }, [])
+
 
     return (
         <div className='header'>
@@ -82,11 +107,11 @@ const Header = ({ type }) => {
                             <FontAwesomeIcon icon={faBed} className="headerIcon" />
                             <input type='text' placeholder='Where are you going?' className='headerSearchInput' onChange={e => setDestination(e.target.value)} />
                         </div>
-                        <div ref={innerBorderRef} className="headerSearchItem">
+                        <div ref={innerBorderRef} id="date" className="headerSearchItem">
                             <FontAwesomeIcon icon={faCalendar} className="headerIcon" />
                             <span onClick={() => setOpenDate(!openDate)} className='headerSearchText'>{`${format(date[0].startDate, 'dd/MM/yy')} to ${format(date[0].endDate, 'dd/MM/yy')}`}</span>
                             {openDate && <DateRange
-                                
+
                                 editableDateInputs={true}
                                 onChange={item => setDate([item.selection])}
                                 moveRangeOnFirstSelection={false}
@@ -95,7 +120,7 @@ const Header = ({ type }) => {
                                 minDate={new Date()}
                             />}
                         </div>
-                        <div className="headerSearchItem">
+                        <div ref={optionsRef} id="options" className="headerSearchItem">
                             <FontAwesomeIcon icon={faPerson} className="headerIcon" />
                             <span className='headerSearchText' onClick={() => setOpenOptions(!openOptions)}>
                                 {`${options.adult} adults . ${options.children} children . ${options.room} room`}

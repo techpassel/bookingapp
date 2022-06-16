@@ -1,21 +1,23 @@
 .fp {
     width: 100%;
-    max-width: 1024px;
+    max-width: 1044px;
+    padding: 0px 10px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     gap: 20px;
 }
 
 .fpItem {
     flex: 1;
+    min-width: 150px;
     gap: 10px;
     display: flex;
-    // flex-wrap: wrap;
+    flex-wrap: wrap;
     flex-direction: column;
 }
 
 .fpImg {
-    // width: 200px;
     width: 100%;
     object-fit: cover;
     height: 250px;

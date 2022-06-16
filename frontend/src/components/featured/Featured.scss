@@ -1,24 +1,26 @@
 .featured {
     width: 100%;
-    max-width: 1024px;
+    max-width: 1044px;
+    padding: 0px 10px;
     display: flex;
     justify-content: space-between;
     gap: 20px;
     z-index: 1;
 }
 
-.featuredItem{
+.featuredItem {
     position: relative;
     color: white;
     border-radius: 10px;
     overflow: hidden;
     height: 250px;
-
 }
 
 .featuredImg {
     width: 100%;
+    height: 100vh;
     object-fit: cover;
+    background-color: red;
 }
 
 .featuredTitles {
@@ -33,3 +35,15 @@
     }
 }
 
+@media only screen and (max-width: 600px) {
+    .featuredTitles {
+        position: absolute;
+        left: 5px;
+        > h1 {
+            font-size: 25px;
+        }
+        & h2 {
+            font-size: 20px;
+        }
+    }
+}

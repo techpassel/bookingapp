@@ -8,7 +8,8 @@
 
 .headerContainer {
     width: 100%;
-    max-width: 1024px;
+    max-width: 1044px;
+    padding: 0px 10px;
     margin: 20px 0 100px 0;
     &.listMode {
         margin-bottom: 0;
@@ -68,6 +69,41 @@
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+@media only screen and (max-width: 800px) {
+    .header {
+        margin-bottom: 110px;
+    }
+     
+    .headerSearch {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 20px;
+        height: max-content;
+        bottom: -80px;
+        width: 95%;
+    }
+
+    .headerSearchItem {
+        padding-bottom: 7px;
+    }
+
+    .headerList { 
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0;
+    }
+
+    .headerListItem {
+        padding-left: 20px;
+        &.active {
+            border: none;
+            padding: 0px;
+            padding-left: 20px;
+        }
+    }
 }
 
 .headerSearchInput {
