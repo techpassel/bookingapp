@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import qs from 'qs';
 
 const useFetch = (url, requestData = {}, method = 'GET') => {
     const baseApiUrl = process.env.REACT_APP_BASE_API_URL;

@@ -12,7 +12,7 @@ import { useRef } from 'react'
 const HotelList = () => {
   const location = useLocation();
   const [destination, setDestination] = useState(location.state ? location.state.destination : "");
-  const [date, setDate] = useState(location.state ? location.state.date : [
+  const [dates, setDates] = useState(location.state ? location.state.dates : [
     {
       startDate: new Date(),
       endDate: new Date(Date.now() + (24 * 60 * 60 * 1000)),
@@ -80,11 +80,11 @@ const HotelList = () => {
             <div className="lsItem">
               <label>Check-in date</label>
               <div ref={innerBorderRef} className="dateRangeContainer">
-                <span onClick={() => setOpenDate(!openDate)}>{`${format(date[0].startDate, 'dd/MM/yy')} to ${format(date[0].endDate, 'dd/MM/yy')}`}</span>
+                <span onClick={() => setOpenDate(!openDate)}>{`${format(dates[0].startDate, 'dd/MM/yy')} to ${format(dates[0].endDate, 'dd/MM/yy')}`}</span>
                 {openDate && <DateRange
                   className='dateRange'
-                  onChange={item => setDate([item.selection])}
-                  ranges={date}
+                  onChange={item => setDates([item.selection])}
+                  ranges={dates}
                   minDate={new Date()}
                 />}
               </div>

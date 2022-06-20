@@ -26,7 +26,19 @@ const formatCurrency = (amount) => {
     return formatter.format(amount);
 }
 
+const queryStringToObject = (str) => {
+    let stringItems = str.substring(1).split("&");
+    let result = {};
+    stringItems.forEach(e => {
+        let data = e.split("=");
+        if (data[0] && data[0] != null)
+            result = { ...result, [data[0]]: data[1] }
+    })
+    return result;
+}
+
 export {
     getRatingRemark,
-    formatCurrency
+    formatCurrency,
+    queryStringToObject
 }

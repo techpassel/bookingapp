@@ -33,10 +33,11 @@
 }
 
 .hotelAddress {
-    font-size: 12px;
+    font-size: 15px;
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-top: -15px;
 }
 
 .hotelDistance {
@@ -92,20 +93,18 @@
     gap: 20px;
 }
 
-.hotelDetailsPrice>h1 {
+.hotelDetailsPrice > h1 {
     font-size: 18px;
     color: #555;
 }
 
-.hotelDetailsPrice>span {
+.hotelDetailsPrice > span {
+    margin-top: -10px;
     font-size: 14px;
+    font-weight: 400;
 }
 
-.hotelDetailsPrice>span {
-    font-weight: 300;
-}
-
-.hotelDetailsPrice>button {
+.hotelDetailsPrice > button {
     border: none;
     padding: 10px 20px;
     background-color: #0071c2;
@@ -161,4 +160,10 @@
     font-size: 45px;
     color: rgb(184, 184, 184);
     cursor: not-allowed;
+}
+
+.stayDays {
+    margin-top: -30px;
+    font-size: 15px;
+    font-weight: 500;
 }

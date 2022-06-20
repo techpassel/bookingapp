@@ -14,7 +14,6 @@ public class GeneralExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<String> processUnmergeException(final Exception e) {
-        e.printStackTrace();
         String msg = "Error in processing request : "+e.getMessage();
         return new ResponseEntity<>(msg, HttpStatus.BAD_REQUEST);
     }

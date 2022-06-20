@@ -118,20 +118,20 @@ public class AuthService {
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto){
         User user = userRepository.findByEmail(loginRequestDto.getUsername()).orElseThrow(() ->
-                new CustomException("UserNotFoundException"));
+                new CustomException("User does not exist."));
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(),
                     loginRequestDto.getPassword()));
         } catch (DisabledException e) {
             if (user.getIsEmailVerified() == false) {
-                throw new CustomException("EmailNotVerifiedException");
+                throw new CustomException("Email is not verified yet. Please verify your email first to login.");
             } else {
-                throw new DisabledException("InactiveUserException");
+                throw new DisabledException("Your account is disabled now.");
             }
         } catch (BadCredentialsException e) {
             // Since we have already checked if email exist or not above.
             // So throwing this error here simply means password is incorrect.
-            throw new CustomException("InvalidPasswordException");
+            throw new CustomException("Incorrect password");
         }
         UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDto.getUsername());
         String jwtToken = jwtProvider.generateToken(userDetails);
